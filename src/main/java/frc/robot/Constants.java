@@ -20,10 +20,10 @@ public final class Constants {
     public static final double KS = 0.11774;
     public static final double KV = 11.684;
     public static final double KA = 1.7119;
-    public static final double KP = 15.237;
+    public static final double KP = 0;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(141d/1000d);
-    public static final double MAX_VELOCITY = 4;
-    public static final double MAX_ACCELERATION = 3;
+    public static final double MAX_VELOCITY = 3;
+    public static final double MAX_ACCELERATION = 0.25;
 }

@@ -13,7 +13,11 @@ import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.RomiDrivetrain;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,10 +32,21 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final RomiDrivetrain m_romiDrivetrain = new RomiDrivetrain();
-
+  private NetworkTable table = NetworkTableInstance.getDefault().getTable("troubleshooting");
+  NetworkTableEntry leftReference = table.getEntry("left_reference");
+  NetworkTableEntry leftMeasurement = table.getEntry("left_measurement");
+  NetworkTableEntry rightReference = table.getEntry("right_reference");
+  NetworkTableEntry rightMeasurement = table.getEntry("right_measurement");
+  
   PathPlannerTrajectory newPath = PathPlanner.loadPath("New Path", new PathConstraints(Constants.MAX_VELOCITY, Constants.MAX_ACCELERATION));
   
   public Command getFollowTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+    RamseteController disabled_Ramsete = new RamseteController();
+    // disabled_Ramsete.setEnabled(false);
+    
+    PIDController leftController = new PIDController(Constants.KP, Constants.KI, Constants.KD);
+    PIDController rightController = new PIDController(Constants.KP, Constants.KI, Constants.KD);
+
     return new SequentialCommandGroup(
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
@@ -42,13 +57,22 @@ public class RobotContainer {
         new PPRamseteCommand(
             traj,
             m_romiDrivetrain::getPose, // Pose supplier
-            new RamseteController(),
+            disabled_Ramsete,
             new SimpleMotorFeedforward(Constants.KS, Constants.KV, Constants.KA),
             Constants.KINEMATICS, // DifferentialDriveKinematics
             m_romiDrivetrain::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
-            new PIDController(Constants.KP, Constants.KI, Constants.KD), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-            new PIDController(Constants.KP, Constants.KI, Constants.KD), // Right controller (usually the same values as left controller)
-            m_romiDrivetrain::tankDriveVolts, // Voltage biconsumer
+            leftController, // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            rightController, // Right controller (usually the same values as left controller)
+            (leftVolts, rightVolts) -> {
+              m_romiDrivetrain.tankDriveVolts(leftVolts, rightVolts);
+      
+              leftMeasurement.setNumber(m_romiDrivetrain.getWheelSpeeds().leftMetersPerSecond);
+              leftReference.setNumber(leftController.getSetpoint());
+      
+              rightMeasurement.setNumber(m_romiDrivetrain.getWheelSpeeds().rightMetersPerSecond);
+              rightReference.setNumber(rightController.getSetpoint());
+
+            }, // Voltage biconsumer
             m_romiDrivetrain // Requires this drive subsystem
         )
     );
