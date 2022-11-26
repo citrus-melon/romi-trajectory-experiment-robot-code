@@ -25,7 +25,6 @@ public class RomiDrivetrain extends SubsystemBase {
   // to use DIO pins 4/5 and 6/7 for the left and right
   private final Encoder m_leftEncoder = new Encoder(4, 5);
   private final Encoder m_rightEncoder = new Encoder(6, 7);
-
   
   // Set up the differential drive controller
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
@@ -35,7 +34,7 @@ public class RomiDrivetrain extends SubsystemBase {
 
   /** Creates a new RomiDrivetrain. */
   public RomiDrivetrain() {
-    // Use inches as unit for encoder distances
+    // Use meters as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * Constants.WHEEL_DIAMETER_METER) / Constants.COUNTS_PER_REVOLUTION);
     m_rightEncoder.setDistancePerPulse((Math.PI * Constants.WHEEL_DIAMETER_METER) / Constants.COUNTS_PER_REVOLUTION);
 
@@ -67,7 +66,7 @@ public class RomiDrivetrain extends SubsystemBase {
   // }
   
   public Rotation2d getGyroAngleZ() {
-    return new Rotation2d(Math.IEEEremainder(-Math.toRadians(m_gyro.getAngleZ()), 360.0d));
+    return new Rotation2d(-Math.toRadians(Math.IEEEremainder(m_gyro.getAngleZ(), 360.0d)));
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -76,7 +75,7 @@ public class RomiDrivetrain extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_odometry.update(getGyroAngleZ(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {

@@ -22,6 +22,12 @@
     }
   },
   "NetworkTables": {
+    "LiveWindow": {
+      "RomiDrivetrain": {
+        "open": true
+      },
+      "open": true
+    },
     "Romi": {
       "open": true
     },

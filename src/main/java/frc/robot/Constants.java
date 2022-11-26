@@ -15,12 +15,12 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final double COUNTS_PER_REVOLUTION = 1440;
+    public static final double COUNTS_PER_REVOLUTION = 1437.09;
     public static final double WHEEL_DIAMETER_METER = 70d / 1000d;
-    public static final double KS = 0.085302;
-    public static final double KV = 11.119;
-    public static final double KA = 1.9463;
-    public static final double KP = 14.877;
+    public static final double KS = 0.11774;
+    public static final double KV = 11.684;
+    public static final double KA = 1.7119;
+    public static final double KP = 15.237;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(141d/1000d);
