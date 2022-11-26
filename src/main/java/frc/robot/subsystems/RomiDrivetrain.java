@@ -38,12 +38,11 @@ public class RomiDrivetrain extends SubsystemBase {
     // Use inches as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * Constants.WHEEL_DIAMETER_METER) / Constants.COUNTS_PER_REVOLUTION);
     m_rightEncoder.setDistancePerPulse((Math.PI * Constants.WHEEL_DIAMETER_METER) / Constants.COUNTS_PER_REVOLUTION);
-    resetEncoders();
 
     // Invert right side since motor is flipped
     m_rightMotor.setInverted(true);
 
-    m_odometry = new DifferentialDriveOdometry(new Rotation2d(Math.toRadians(m_gyro.getAngleZ())));
+    m_odometry = new DifferentialDriveOdometry(getGyroAngleZ());
   }
 
   // public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
@@ -66,10 +65,14 @@ public class RomiDrivetrain extends SubsystemBase {
   // public double getRightDistanceInch() {
   //   return m_rightEncoder.getDistance();
   // }
+  
+  public Rotation2d getGyroAngleZ() {
+    return new Rotation2d(Math.IEEEremainder(-Math.toRadians(m_gyro.getAngleZ()), 360.0d));
+  }
 
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    m_odometry.resetPosition(pose, new Rotation2d(Math.toRadians(m_gyro.getAngleZ())));
+    m_odometry.resetPosition(pose, getGyroAngleZ());
   }
 
   public Pose2d getPose() {
