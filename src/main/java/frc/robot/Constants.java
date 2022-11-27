@@ -17,12 +17,12 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 public final class Constants {
     public static final double COUNTS_PER_REVOLUTION = 1437.09;
     public static final double WHEEL_DIAMETER_METER = 70d / 1000d;
-    public static final double KS = 0.11774;
-    public static final double KV = 11.684;
-    public static final double KA = 1.7119;
-    public static final double KP = 0;
+    public static final double KS = 0.26394;
+    public static final double KV = 10.83;
+    public static final double KA = 1.6739;
+    public static final double KP = 1;
     public static final double KI = 0;
-    public static final double KD = 0;
+    public static final double KD = 0.005;
     public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(141d/1000d);
     public static final double MAX_VELOCITY = 3;
     public static final double MAX_ACCELERATION = 0.25;

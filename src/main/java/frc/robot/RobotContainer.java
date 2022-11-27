@@ -38,10 +38,10 @@ public class RobotContainer {
   NetworkTableEntry rightReference = table.getEntry("right_reference");
   NetworkTableEntry rightMeasurement = table.getEntry("right_measurement");
   
-  PathPlannerTrajectory newPath = PathPlanner.loadPath("New Path", new PathConstraints(Constants.MAX_VELOCITY, Constants.MAX_ACCELERATION));
+  PathPlannerTrajectory newPath = PathPlanner.loadPath("New New Path", new PathConstraints(Constants.MAX_VELOCITY, Constants.MAX_ACCELERATION));
   
   public Command getFollowTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-    RamseteController disabled_Ramsete = new RamseteController();
+    RamseteController ramsete = new RamseteController();
     // disabled_Ramsete.setEnabled(false);
     
     PIDController leftController = new PIDController(Constants.KP, Constants.KI, Constants.KD);
@@ -57,7 +57,7 @@ public class RobotContainer {
         new PPRamseteCommand(
             traj,
             m_romiDrivetrain::getPose, // Pose supplier
-            disabled_Ramsete,
+            ramsete,
             new SimpleMotorFeedforward(Constants.KS, Constants.KV, Constants.KA),
             Constants.KINEMATICS, // DifferentialDriveKinematics
             m_romiDrivetrain::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
